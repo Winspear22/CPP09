@@ -33,6 +33,7 @@
 /*====================================================*/
 # define SUCCESS 0
 # define FAILURE 1
+# define IS_NOT_A_NUMBER 0
 /*====================================================*/
 
 
@@ -50,8 +51,9 @@ class BitcoinExchange
 		std::map<std::string, float>		GetFileContent( void );
 		void								SetFileContent( std::map<std::string, float> map );
 		
-		
 		void								SplitByCharacter( std::string input );
+		void								CompareFileWithDatabase( std::string input );
+		bool								ErrorChecker( std::string );
 
 		std::map<std::string, float>			_database_content;
 		std::map<std::string, float>::iterator	_it;

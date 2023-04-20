@@ -35,7 +35,7 @@ int main( int argc, char **argv )
 	if (file.is_open())
 	{
 		while (getline(file, line))
-
+			btc.CompareFileWithDatabase(line);
 		file.close();
 	}
 	else
@@ -43,12 +43,12 @@ int main( int argc, char **argv )
 		std::cerr << RED << "Error. Unable to open file " << WHITE << argv[1] << NORMAL << std::endl;
         return (FAILURE);
 	}
-	btc._it = btc._database_content.begin();
+	/*btc._it = btc._database_content.begin();
 	while (btc._it != btc._database_content.end())
 	{
 		std::cout << BLUE << "First == " << WHITE << btc._it->first << NORMAL << std::endl;
 		std::cout << GREEN << "Second == " << WHITE << btc._it->second << NORMAL << std::endl;
 		btc._it++;
-	}
+	}*/
     return (SUCCESS);
 }

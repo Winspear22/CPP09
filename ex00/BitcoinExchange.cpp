@@ -48,3 +48,28 @@ void BitcoinExchange::SplitByCharacter( std::string input )
     }
 	return ;
 }
+
+bool BitcoinExchange::ErrorChecker( std::string str )
+{
+	int i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (isdigit(str[i]) == IS_NOT_A_NUMBER && str[i] != '-' && str[i] != '.' && str[i] != ' ' \
+			&& str[i] != '|' && str[i] != '\n')
+			{
+				std::cerr << "ICI" << std::endl;
+				//std::cerr << RED << "Failed at : " << WHITE << str << RED << " with the character " << WHITE << str[i] << NORMAL << std::endl;
+				return (FAILURE);
+			}
+		i++;
+	}
+	return (SUCCESS);
+}
+
+void BitcoinExchange::CompareFileWithDatabase( std::string input )
+{
+	this->ErrorChecker(input);
+	return ;
+}
