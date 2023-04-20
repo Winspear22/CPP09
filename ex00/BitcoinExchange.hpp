@@ -9,6 +9,9 @@
 # include <map>
 # include <stdio.h>
 # include <fstream>
+# include <string.h>
+
+# include <cstdlib>
 /*====================================================*/
 
 /*====================================================*/
@@ -44,8 +47,17 @@ class BitcoinExchange
 		const BitcoinExchange & operator=( const BitcoinExchange & rhs );
 		~BitcoinExchange( void );
 
+		std::map<std::string, float>		GetFileContent( void );
+		void								SetFileContent( std::map<std::string, float> map );
+		
+		
+		void								SplitByCharacter( std::string input );
+
+		std::map<std::string, float>			_database_content;
+		std::map<std::string, float>::iterator	_it;
 
 	private:
+
 
 };
 /*====================================================*/
