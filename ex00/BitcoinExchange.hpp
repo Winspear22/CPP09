@@ -57,8 +57,6 @@ class BitcoinExchange
 		/*--------------------------------------------CONSTRUCTORS AND DESTRUCTOR--------------------------------------------*/
 		/*===================================================================================================================*/
 														BitcoinExchange(/*ARGS*/);
-														BitcoinExchange( const BitcoinExchange & copy );
-														const BitcoinExchange & operator=( const BitcoinExchange & rhs );
 														~BitcoinExchange( void );
 		/*===================================================================================================================*/
 		/*------------------------------------------------GETTERS AND SETTERS------------------------------------------------*/
@@ -92,6 +90,8 @@ class BitcoinExchange
 		bool											ErrorAmountFormatChecker( const std::string &str );
 
 	private:
+		BitcoinExchange( const BitcoinExchange & copy );
+		const BitcoinExchange & operator=( const BitcoinExchange & rhs );
 		std::map<std::string, float>					_database_content;
 		std::map<std::string, float>::iterator			_it;
 		std::map<std::string, float>::reverse_iterator	_rit;

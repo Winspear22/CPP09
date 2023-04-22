@@ -93,25 +93,6 @@ void BitcoinExchange::SplitByCharacter( std::string input )
 	return ;
 }
 
-/*std::string BitcoinExchange::SplitByCharacterForChecking( std::string input, int choice )
-{
-	size_t comma_pos;
-	std::string element;
-
-	comma_pos = input.find('|');
-	if (choice == DATE)
-	{
-		if (comma_pos != std::string::npos)
-			element = input.substr(0, comma_pos - 1);
-	}
-	else if (choice == VALUE)
-	{
-		if (comma_pos != std::string::npos)
-			element = input.substr(comma_pos + 1);
-	}
-	return (element);
-}*/
-
 std::string BitcoinExchange::SplitByCharacterForChecking( std::string input, int choice, const char c )
 {
 	size_t comma_pos;
@@ -208,19 +189,19 @@ int BitcoinExchange::ErrorCharacterChecker( const std::string &str )
 	
 	/*VERIFIE LE CAS OU ON FAIT 15 14*/
 	std::string value_str = this->SplitByCharacterForChecking(str, VALUE, '|');
-	size_t 		i = value_str.find_first_of("0123456789");
-	while (value_str[i])
-	{
-		if (!isdigit(value_str[i]) && value_str[i] != '.')
-			break ;
-		i++;
-	}
-	size_t j = i;
+	size_t 		j = value_str.find_first_of("0123456789");
 	while (value_str[j])
+	{
+		if (!isdigit(value_str[j]) && value_str[j] != '.')
+			break ;
+		j++;
+	}
+	size_t k = j;
+	while (value_str[k])
     {
-        if (!isspace(value_str[j]))
+        if (!isspace(value_str[k]))
             return (FAILURE);
-        j++;
+        k++;
     }
     return (SUCCESS);
 }
