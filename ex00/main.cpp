@@ -22,7 +22,7 @@ int main( int argc, char **argv )
     } 
 	else 
 	{
-        std::cerr << RED << "Error. Unable to open database " << WHITE << "data.csv" << NORMAL << std::endl;
+        std::cerr << RED << "Error: could not open database " << WHITE << "data.csv." << NORMAL << std::endl;
         return (FAILURE);
     }
 
@@ -38,7 +38,7 @@ int main( int argc, char **argv )
 	}
 	else
 	{
-		std::cerr << RED << "Error. Unable to open file " << WHITE << argv[1] << NORMAL << std::endl;
+		std::cerr << RED << "Error: could not open file." << NORMAL << std::endl;
         return (FAILURE);
 	}
     return (SUCCESS);

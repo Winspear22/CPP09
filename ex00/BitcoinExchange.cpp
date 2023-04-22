@@ -2,6 +2,7 @@
 
 BitcoinExchange::BitcoinExchange(/*ARGS*/)
 {
+	this->_switch = FIRST_TIME;
 	return ;
 }
 
@@ -17,6 +18,7 @@ const BitcoinExchange & BitcoinExchange::operator=( const BitcoinExchange & rhs 
         this->_it = rhs._it;
 		this->_rit = rhs._rit;
         this->_database_content = rhs._database_content;
+		this->_switch = rhs._switch;
     }
 	return (*this);
 }
@@ -40,6 +42,11 @@ std::map<std::string, float>::reverse_iterator	BitcoinExchange::GetReverseIterat
 	return (this->_rit);
 }
 
+bool		BitcoinExchange::GetSwitch( void )
+{
+	return (this->_switch);
+}
+
 void		BitcoinExchange::SetDatabaseContent( std::string first_element, float second_element )
 {
 	this->_database_content.insert(std::make_pair(first_element, second_element));
@@ -52,6 +59,11 @@ void		BitcoinExchange::SetIterator( void )
 void		BitcoinExchange::SetReverseIterator( void )
 {
 	this->_rit = this->_database_content.rbegin();
+}
+
+void		BitcoinExchange::SetSwitch( bool i )
+{
+	this->_switch = i;
 }
 
 void BitcoinExchange::SplitByCharacter( std::string input )
@@ -76,13 +88,12 @@ void BitcoinExchange::SplitByCharacter( std::string input )
         first_element = input.substr(0, comma_pos);
         second_element_str = input.substr(comma_pos + 1);
 		second_element = static_cast<float>(std::strtod(second_element_str.c_str(), NULL));
-		//this->_database_content.insert(std::make_pair(first_element, second_element));
 		this->SetDatabaseContent(first_element, second_element);
     }
 	return ;
 }
 
-std::string BitcoinExchange::SplitByCharacterForChecking( std::string input, int choice )
+/*std::string BitcoinExchange::SplitByCharacterForChecking( std::string input, int choice )
 {
 	size_t comma_pos;
 	std::string element;
@@ -99,8 +110,26 @@ std::string BitcoinExchange::SplitByCharacterForChecking( std::string input, int
 			element = input.substr(comma_pos + 1);
 	}
 	return (element);
-}
+}*/
 
+std::string BitcoinExchange::SplitByCharacterForChecking( std::string input, int choice, const char c )
+{
+	size_t comma_pos;
+	std::string element;
+
+	comma_pos = input.find(c);
+	if (choice == DATE)
+	{
+		if (comma_pos != std::string::npos)
+			element = input.substr(0, comma_pos - 1);
+	}
+	else if (choice == VALUE)
+	{
+		if (comma_pos != std::string::npos)
+			element = input.substr(comma_pos + 1);
+	}
+	return (element);
+}
 
 void BitcoinExchange::ErrorMsg( const std::string &str, int error_nb )
 {
@@ -117,7 +146,7 @@ bool BitcoinExchange::ErrorAmountFormatChecker( const std::string &str )
 	std::string value_str;
 	long long	value;
 
-	value_str = this->SplitByCharacterForChecking(str, VALUE);
+	value_str = this->SplitByCharacterForChecking(str, VALUE, '|');
 	value = std::atol(value_str.c_str());
 	if (value > std::numeric_limits<int>::max())
 	{
@@ -132,14 +161,21 @@ bool BitcoinExchange::ErrorAmountFormatChecker( const std::string &str )
 	return (SUCCESS);
 }
 
-bool BitcoinExchange::ErrorCharacterChecker( const std::string &str )
+int BitcoinExchange::ErrorCharacterChecker( const std::string &str )
 {
 	size_t	i;
 	int		pipe_count;
+	int		middle_score_count;
 	
 	i = 0;
 	pipe_count = 0;
-	i = 0;
+	middle_score_count = 0;
+	if (str == "date | value\r" && this->_switch == FIRST_TIME)
+	{
+		this->SetSwitch(SECOND_TIME);
+		return (FIRST_LINE_ERROR);
+	}
+	/*VERIFIE LA PRESENCE DE LETTRES OU CARACTERES INTERDITS*/
     while (i < str.size())
     {
         char c = str[i];
@@ -151,10 +187,41 @@ bool BitcoinExchange::ErrorCharacterChecker( const std::string &str )
             return (FAILURE);
 		if (c == '|')
             pipe_count++;
+		if (c == '-')
+			middle_score_count++;
 		i++;
     }
+	/*VERIFIE QU'IL YA BIEN AU MOINS UN PIPE ET QUE CE PIPE EST ' | '*/
 	if (str.find(" | ") == std::string::npos || pipe_count > 1) 
-        return FAILURE;
+        return (FAILURE);
+	/*VERIFIE QU'ON NE PUISSE PAS ENCHAINER LES - COMME CA -----15*/
+	if (middle_score_count > 3)
+		return (FAILURE);
+
+	/*VERIFIE QU'IL Y'A BIEN UN CHIFFRE APRES LE PIPE*/
+	size_t 		last_pipe_pos = str.find_last_of('|');
+	std::string after_pipe = str.substr(last_pipe_pos + 1);
+    if (last_pipe_pos == std::string::npos || last_pipe_pos + 1 >= str.size())
+        return (FAILURE);
+    if (after_pipe.find_first_not_of(" ") == std::string::npos || !isdigit(after_pipe[after_pipe.find_first_not_of(" -")]))
+		return (FAILURE);
+	
+	/*VERIFIE LE CAS OU ON FAIT 15 14*/
+	std::string value_str = this->SplitByCharacterForChecking(str, VALUE, '|');
+	size_t 		i = value_str.find_first_of("0123456789");
+	while (value_str[i])
+	{
+		if (!isdigit(value_str[i]) && value_str[i] != '.')
+			break ;
+		i++;
+	}
+	size_t j = i;
+	while (value_str[j])
+    {
+        if (!isspace(value_str[j]))
+            return (FAILURE);
+        j++;
+    }
     return (SUCCESS);
 }
 
@@ -168,7 +235,7 @@ bool BitcoinExchange::ErrorDateFormatChecker( const std::string &str )
 	int year;
     int month;
     int day;
-	full_date = this->SplitByCharacterForChecking(str, DATE);
+	full_date = this->SplitByCharacterForChecking(str, DATE, '|');
 	if (full_date.size() != 10 || full_date[4] != '-' || full_date[7] != '-')
         return (FAILURE);
 	year_str = full_date.substr(0, 4);
@@ -195,6 +262,8 @@ bool BitcoinExchange::ErrorDateFormatChecker( const std::string &str )
 
 bool BitcoinExchange::CheckForErrorsInInput( std::string input )
 {
+	if (this->ErrorCharacterChecker(input) == FIRST_LINE_ERROR)
+		return (FAILURE);
 	if (this->ErrorCharacterChecker(input) == FAILURE)
 	{
 		ErrorMsg(input, CHARACTER_ERROR);
@@ -221,8 +290,8 @@ void BitcoinExchange::WriteCorrectOutpout( const std::string &str )
 	float			value;
 
 	this->SetIterator();
-	value_str = this->SplitByCharacterForChecking(str, VALUE);
-	date_str = this->SplitByCharacterForChecking(str, DATE);
+	value_str = this->SplitByCharacterForChecking(str, VALUE, '|');
+	date_str = this->SplitByCharacterForChecking(str, DATE, '|');
 	value = std::atof(value_str.c_str());
 	while (this->_it != this->_database_content.end())
 	{

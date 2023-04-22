@@ -33,9 +33,7 @@
 /*====================================================*/
 # define SUCCESS 0
 # define FAILURE 1
-# define IS_NOT_A_NUMBER 0
-# define IS_A_NUMBER 1
-# define IS_NOT_PRINTABLE 0
+# define FIRST_LINE_ERROR 2
 
 # define CHARACTER_ERROR 1
 # define DATE_ERROR 2
@@ -43,6 +41,9 @@
 
 # define VALUE 1
 # define DATE 2
+
+# define FIRST_TIME 1
+# define SECOND_TIME 2
 /*====================================================*/
 
 
@@ -52,34 +53,49 @@
 class BitcoinExchange
 {
 	public:
-		BitcoinExchange(/*ARGS*/);
-		BitcoinExchange( const BitcoinExchange & copy );
-		const BitcoinExchange & operator=( const BitcoinExchange & rhs );
-		~BitcoinExchange( void );
-
+		/*===================================================================================================================*/
+		/*--------------------------------------------CONSTRUCTORS AND DESTRUCTOR--------------------------------------------*/
+		/*===================================================================================================================*/
+														BitcoinExchange(/*ARGS*/);
+														BitcoinExchange( const BitcoinExchange & copy );
+														const BitcoinExchange & operator=( const BitcoinExchange & rhs );
+														~BitcoinExchange( void );
+		/*===================================================================================================================*/
+		/*------------------------------------------------GETTERS AND SETTERS------------------------------------------------*/
+		/*===================================================================================================================*/
 		std::map<std::string, float>					GetDatabaseContent( void );
 		std::map<std::string, float>::iterator			GetIterator( void );
 		std::map<std::string, float>::reverse_iterator	GetReverseIterator( void );
+		bool											GetSwitch( void );
 		void											SetDatabaseContent( std::string first_element, float second_element );
 		void											SetIterator( void );
 		void											SetReverseIterator( void );
+		void											SetSwitch( bool i );
+		/*===================================================================================================================*/
+		/*-----------------------------------------------------SPLITTERS-----------------------------------------------------*/
+		/*===================================================================================================================*/
+		void											SplitByCharacter( std::string input );
+		//std::string 									SplitByCharacterForChecking( std::string input, int choice );
+		std::string										SplitByCharacterForChecking( std::string input, int choice, const char c );
 
-		void								SplitByCharacter( std::string input );
-		std::string 						SplitByCharacterForChecking( std::string input, int choice );
-		
-
-		bool								CheckForErrorsInInput( std::string input );
-		void								WriteCorrectOutpout( const std::string &str );
-		
-		bool								ErrorCharacterChecker( const std::string &str );
-		void								ErrorMsg( const std::string &str, int error_nb );
-		bool								ErrorDateFormatChecker( const std::string &str );
-		bool								ErrorAmountFormatChecker( const std::string &str );
+		/*===================================================================================================================*/
+		/*------------------------------------------------CHECKERS AND WRITING-----------------------------------------------*/
+		/*===================================================================================================================*/
+		bool											CheckForErrorsInInput( std::string input );
+		void											WriteCorrectOutpout( const std::string &str );
+		/*===================================================================================================================*/
+		/*---------------------------------------------------ERROR HANDLERS--------------------------------------------------*/
+		/*===================================================================================================================*/
+		int												ErrorCharacterChecker( const std::string &str );
+		void											ErrorMsg( const std::string &str, int error_nb );
+		bool											ErrorDateFormatChecker( const std::string &str );
+		bool											ErrorAmountFormatChecker( const std::string &str );
 
 	private:
 		std::map<std::string, float>					_database_content;
 		std::map<std::string, float>::iterator			_it;
-		std::map<std::string, float>::reverse_iterator _rit;
+		std::map<std::string, float>::reverse_iterator	_rit;
+		bool											_switch;
 
 
 };
