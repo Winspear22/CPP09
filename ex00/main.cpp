@@ -1,13 +1,7 @@
 # include "BitcoinExchange.hpp"
 
-
-//error: request for member ‘SplitByCharacter’ in ‘btc’, which is of non-class type ‘BitcoinExchange()’
-//    btc.SplitByCharacter(line)
-//100 + 97 + 116 + 101 + 32 + 124 + 32 + 118 + 97 + 108 + 117 + 101 + 13;
-
 int main( int argc, char **argv )
 {
-	(void)argv;
 	if (argc != 2)
 	{
 		std::cerr << RED << "Error. Not enough or too much arguments. You have " \
@@ -36,7 +30,10 @@ int main( int argc, char **argv )
 	if (file.is_open())
 	{
 		while (getline(file, line))
-			btc.CompareFileWithDatabase(line);
+		{
+			if (btc.CheckForErrorsInInput(line) == SUCCESS)
+				btc.WriteCorrectOutpout(line);
+		}
 		file.close();
 	}
 	else
@@ -44,12 +41,5 @@ int main( int argc, char **argv )
 		std::cerr << RED << "Error. Unable to open file " << WHITE << argv[1] << NORMAL << std::endl;
         return (FAILURE);
 	}
-	/*btc._it = btc._database_content.begin();
-	while (btc._it != btc._database_content.end())
-	{
-		std::cout << BLUE << "First == " << WHITE << btc._it->first << NORMAL << std::endl;
-		std::cout << GREEN << "Second == " << WHITE << btc._it->second << NORMAL << std::endl;
-		btc._it++;
-	}*/
     return (SUCCESS);
 }

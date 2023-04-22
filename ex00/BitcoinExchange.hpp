@@ -57,26 +57,29 @@ class BitcoinExchange
 		const BitcoinExchange & operator=( const BitcoinExchange & rhs );
 		~BitcoinExchange( void );
 
-		std::map<std::string, float>		GetFileContent( void );
-		void								SetFileContent( std::map<std::string, float> map );
-		bool								GetSwitch( void );
+		std::map<std::string, float>					GetDatabaseContent( void );
+		std::map<std::string, float>::iterator			GetIterator( void );
+		std::map<std::string, float>::reverse_iterator	GetReverseIterator( void );
+		void											SetDatabaseContent( std::string first_element, float second_element );
+		void											SetIterator( void );
+		void											SetReverseIterator( void );
 
 		void								SplitByCharacter( std::string input );
 		std::string 						SplitByCharacterForChecking( std::string input, int choice );
+		
 
-		void								CompareFileWithDatabase( std::string input );
+		bool								CheckForErrorsInInput( std::string input );
+		void								WriteCorrectOutpout( const std::string &str );
 		
 		bool								ErrorCharacterChecker( const std::string &str );
 		void								ErrorMsg( const std::string &str, int error_nb );
 		bool								ErrorDateFormatChecker( const std::string &str );
 		bool								ErrorAmountFormatChecker( const std::string &str );
 
-
-		std::map<std::string, float>			_database_content;
-		std::map<std::string, float>::iterator	_it;
-
 	private:
-		bool									_switch;
+		std::map<std::string, float>					_database_content;
+		std::map<std::string, float>::iterator			_it;
+		std::map<std::string, float>::reverse_iterator _rit;
 
 
 };
