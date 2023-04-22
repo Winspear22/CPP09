@@ -10,7 +10,7 @@
 # include <stdio.h>
 # include <fstream>
 # include <string.h>
-
+# include <limits>
 # include <cstdlib>
 /*====================================================*/
 
@@ -40,6 +40,9 @@
 # define CHARACTER_ERROR 1
 # define DATE_ERROR 2
 # define AMOUNT_ERROR 3
+
+# define VALUE 1
+# define DATE 2
 /*====================================================*/
 
 
@@ -59,7 +62,7 @@ class BitcoinExchange
 		bool								GetSwitch( void );
 
 		void								SplitByCharacter( std::string input );
-		std::string 						SplitByCharacterForChecking( std::string input );
+		std::string 						SplitByCharacterForChecking( std::string input, int choice );
 
 		void								CompareFileWithDatabase( std::string input );
 		

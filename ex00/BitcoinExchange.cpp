@@ -55,7 +55,7 @@ void BitcoinExchange::SplitByCharacter( std::string input )
 	return ;
 }
 
-std::string BitcoinExchange::SplitByCharacterForChecking( std::string input )
+/*std::string BitcoinExchange::SplitByCharacterForChecking( std::string input )
 {
 	size_t comma_pos;
 	std::string first_element;
@@ -64,7 +64,27 @@ std::string BitcoinExchange::SplitByCharacterForChecking( std::string input )
     if (comma_pos != std::string::npos)
 		first_element = input.substr(0, comma_pos - 1);
 	return (first_element);
+}*/
+
+std::string BitcoinExchange::SplitByCharacterForChecking( std::string input, int choice )
+{
+	size_t comma_pos;
+	std::string element;
+
+	comma_pos = input.find('|');
+	if (choice == DATE)
+	{
+		if (comma_pos != std::string::npos)
+			element = input.substr(0, comma_pos - 1);
+	}
+	else if (choice == VALUE)
+	{
+		if (comma_pos != std::string::npos)
+			element = input.substr(comma_pos + 1);
+	}
+	return (element);
 }
+
 
 void BitcoinExchange::ErrorMsg( const std::string &str, int error_nb )
 {
@@ -78,7 +98,25 @@ void BitcoinExchange::ErrorMsg( const std::string &str, int error_nb )
 
 bool BitcoinExchange::ErrorAmountFormatChecker( const std::string &str )
 {
-	(void)str;
+	std::string value_str;
+	long long	value;
+	if (str == "date | value\r" && this->_switch == false)
+	{
+		this->_switch = true;
+		return (SUCCESS);
+	}
+	value_str = this->SplitByCharacterForChecking(str, VALUE);
+	value = std::atol(value_str.c_str());
+	if (value > std::numeric_limits<int>::max())
+	{
+		std::cout << RED << "Error: " << WHITE << "too large a number." << NORMAL << std::endl; 
+		return (FAILURE);
+	}
+	if (value < 0)
+	{
+		std::cout << RED << "Error: " << WHITE << "not a positive number." << NORMAL << std::endl;
+		return (FAILURE);
+	}
 	return (SUCCESS);
 }
 
@@ -121,11 +159,8 @@ bool BitcoinExchange::ErrorDateFormatChecker( const std::string &str )
     int month;
     int day;
 	if (str == "date | value\r" && this->_switch == false)
-	{
-		this->_switch = true;
 		return (SUCCESS);
-	}
-	full_date = this->SplitByCharacterForChecking(str);
+	full_date = this->SplitByCharacterForChecking(str, DATE);
 	if (full_date.size() != 10 || full_date[4] != '-' || full_date[7] != '-')
         return (FAILURE);
 	year_str = full_date.substr(0, 4);
