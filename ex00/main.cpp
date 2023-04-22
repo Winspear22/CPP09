@@ -2,7 +2,8 @@
 
 
 //error: request for member ‘SplitByCharacter’ in ‘btc’, which is of non-class type ‘BitcoinExchange()’
-//    btc.SplitByCharacter(line);
+//    btc.SplitByCharacter(line)
+//100 + 97 + 116 + 101 + 32 + 124 + 32 + 118 + 97 + 108 + 117 + 101 + 13;
 
 int main( int argc, char **argv )
 {
