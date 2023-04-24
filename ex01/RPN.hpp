@@ -62,6 +62,7 @@ class RPN
 		PtrToOperatorFcts 	*ptr;
 
     private:
+		RPN(/*ARGS*/);
 		const RPN & 		operator=( const RPN & rhs );
 		RPN( const RPN & copy );
 		std::string			_input_data;

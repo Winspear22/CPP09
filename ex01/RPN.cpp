@@ -1,5 +1,10 @@
 # include "RPN.hpp"
 
+RPN::RPN(/*ARGS*/)
+{
+	return ;
+}
+
 RPN::RPN( const std::string & input ): argv_splitted(input)
 {
 	this->ptr_to_funct[0].op = '+';
