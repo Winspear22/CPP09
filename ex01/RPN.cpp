@@ -26,15 +26,15 @@ float div(float a, float b, float &result)
 
 RPN::RPN( const std::string & input ): argv_splitted(input)
 {
-	this->operatorFunctions[0].op = '+';
-    this->operatorFunctions[0].func = add;
-    this->operatorFunctions[1].op = '-';
-    this->operatorFunctions[1].func = sub;
-    this->operatorFunctions[2].op = '*';
-    this->operatorFunctions[2].func = mul;
-    this->operatorFunctions[3].op = '/';
-    this->operatorFunctions[3].func = div;
-	this->opFunc = NULL;
+	this->ptr_to_funct[0].op = '+';
+    this->ptr_to_funct[0].func = add;
+    this->ptr_to_funct[1].op = '-';
+    this->ptr_to_funct[1].func = sub;
+    this->ptr_to_funct[2].op = '*';
+    this->ptr_to_funct[2].func = mul;
+    this->ptr_to_funct[3].op = '/';
+    this->ptr_to_funct[3].func = div;
+	this->ptr = NULL;
 	return ;
 }
 
@@ -55,8 +55,8 @@ const RPN & 		RPN::operator=( const RPN & rhs )
 	i = 0;
 	while (i < 4)
 	{
-		this->operatorFunctions[i].op = rhs.operatorFunctions[i].op;
-        this->operatorFunctions[i].func = rhs.operatorFunctions[i].func;
+		this->ptr_to_funct[i].op = rhs.ptr_to_funct[i].op;
+        this->ptr_to_funct[i].func = rhs.ptr_to_funct[i].func;
 		i++;
 	}
 	return (*this);

@@ -32,13 +32,14 @@
 /*====================================================*/
 # define SUCCESS 0
 # define FAILURE 1
+# define NO 0
 /*====================================================*/
 
-struct OperatorFunction 
+struct PtrToOperatorFcts 
 {
     char op;
     float (*func)(float, float, float&);
-	
+
 };
 
 float add(float a, float b, float &result);
@@ -67,8 +68,8 @@ class RPN
 		
 		std::stack<float>		_stack;
 		std::istringstream	argv_splitted;
-		OperatorFunction operatorFunctions[4];
-		OperatorFunction opFunc;
+		PtrToOperatorFcts ptr_to_funct[4];
+		PtrToOperatorFcts *ptr;
 
     private:
 		RPN( const RPN & copy );
