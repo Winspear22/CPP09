@@ -1,12 +1,19 @@
 # include "RPN.hpp"
 
+/*$> ./RPN "8 9 * 9 - 9 - 9 - 4 - 1 +"
+42
+$> ./RPN "7 7 * 7 -"
+42
+$> ./RPN "1 2 * 2 / 2 * 2 4 - +"
+0
+$> ./RPN "(1 + 1)"
+Error*/
+
 int main(int argc, char **argv)
 {
     if (argc != 2)
     {
-        std::cerr << RED << "Error. Not enough or too much arguments. You have " \
-		<< WHITE << argc - 1 << RED << " arguments, you must have " \
-		<< WHITE << "1" << RED << " argument." << NORMAL << std::endl;
+		std::cerr << RED << "Error" << NORMAL << std::endl;
         return (FAILURE);
     }
 
@@ -18,9 +25,10 @@ int main(int argc, char **argv)
 	float			result;
 	float			IsThereAnError;
 	float			nbr;
+	bool 			OperationPerformed;
     while (instance.argv_splitted >> str)
     {
-		bool operationPerformed = false;
+		OperationPerformed = false;
         if (str.size() == 1) 
 		{
 			i = 0;
@@ -36,47 +44,47 @@ int main(int argc, char **argv)
             }
             if (instance.ptr != NULL) 
 			{
-                if (instance._stack.size() < 2) 
+                if (instance.stack.size() < 2) 
 				{
-                    std::cerr << "Error: Not enough elements in the stack" << std::endl;
+                    std::cerr << RED << "Error" << NORMAL << std::endl;
                     return (FAILURE);
                 }
-                number2 = instance._stack.top();
-                instance._stack.pop();
-                number1 = instance._stack.top();
-                instance._stack.pop();
-                IsThereAnError = instance.ptr->func(number1, number2, result);
+                number2 = instance.stack.top();
+                instance.stack.pop();
+                number1 = instance.stack.top();
+                instance.stack.pop();
+                IsThereAnError = instance.ptr->fcts(number1, number2, result);
                 if (IsThereAnError != NO) 
 				{
-                    std::cerr << "Error: Division by zero." << std::endl;
+                    std::cerr << RED << "Error" << NORMAL << std::endl;
                     return (FAILURE);
                 }
-                instance._stack.push(result);
-				operationPerformed = true;
+                instance.stack.push(result);
+				OperationPerformed = true;
             }
         }
-		if (!operationPerformed)
+		if (!OperationPerformed)
         {
             i = 0;
             while (i < str.size())
             {
                 if (!isdigit(str[i]))
                 {
-                    std::cerr << "Error: Argument contains something different from a digit or an operand." << std::endl;
+                    std::cerr << RED << "Error" << NORMAL << std::endl;
                     return (FAILURE);
                 }
                 i++;
             }
 			nbr = atol(str.c_str());
-            instance._stack.push(nbr);
+            instance.stack.push(nbr);
         }
     }
-    if (instance._stack.size() != 1) 
+    if (instance.stack.size() != 1) 
 	{
-        std::cerr << "Error: Invalid input expression." << std::endl;
+		std::cerr << RED << "Error" << NORMAL << std::endl;
         return (FAILURE);
     }
-    std::cout << instance._stack.top() << std::endl;
+    std::cout << instance.stack.top() << std::endl;
     return (SUCCESS);
 }
 

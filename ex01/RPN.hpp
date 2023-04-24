@@ -38,14 +38,9 @@
 struct PtrToOperatorFcts 
 {
     char op;
-    float (*func)(float, float, float&);
+    float (*fcts)(float, float, float&);
 
 };
-
-float add(float a, float b, float &result);
-float sub(float a, float b, float &result);
-float mul(float a, float b, float &result);
-float divi(float a, float b, float &result);
 
 /*====================================================*/
 /*----------------------CLASS RPN---------------------*/
@@ -57,23 +52,28 @@ class RPN
 		/*--------------------------------------------CONSTRUCTORS AND DESTRUCTOR--------------------------------------------*/
 		/*===================================================================================================================*/
 							RPN( const std::string & input );
-							const RPN & operator=( const RPN & rhs );
 							~RPN( void );
 		/*===================================================================================================================*/
-		/*------------------------------------------------GETTERS AND SETTERS------------------------------------------------*/
+		/*---------------------------------------------------PUBLIC VARIABLES------------------------------------------------*/
 		/*===================================================================================================================*/
-		std::stack<float>				GetStack( void ) const;
-		void							SetStack( std::stack<float> src );
-		bool							IsOperand( const std::string & str ) const;
-		
-		std::stack<float>		_stack;
+		std::stack<float>	stack;
 		std::istringstream	argv_splitted;
-		PtrToOperatorFcts ptr_to_funct[4];
-		PtrToOperatorFcts *ptr;
+		PtrToOperatorFcts 	ptr_to_funct[4];
+		PtrToOperatorFcts 	*ptr;
 
     private:
+		const RPN & 		operator=( const RPN & rhs );
 		RPN( const RPN & copy );
 		std::string			_input_data;
 };
 /*====================================================*/
+
+/*====================================================*/
+/*-----------------OPERATOR FUNCTIONS-----------------*/
+/*====================================================*/
+
+float add(float a, float b, float &result);
+float sub(float a, float b, float &result);
+float mul(float a, float b, float &result);
+float div(float a, float b, float &result);
 #endif
