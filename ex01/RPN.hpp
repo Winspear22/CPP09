@@ -10,6 +10,7 @@
 # include <stdio.h>
 # include <fstream>
 # include <sstream>
+# include <stdlib.h>
 /*====================================================*/
 
 /*====================================================*/
@@ -33,6 +34,17 @@
 # define FAILURE 1
 /*====================================================*/
 
+struct OperatorFunction 
+{
+    char op;
+    float (*func)(float, float, float&);
+	
+};
+
+float add(float a, float b, float &result);
+float sub(float a, float b, float &result);
+float mul(float a, float b, float &result);
+float divi(float a, float b, float &result);
 
 /*====================================================*/
 /*----------------------CLASS RPN---------------------*/
@@ -44,20 +56,22 @@ class RPN
 		/*--------------------------------------------CONSTRUCTORS AND DESTRUCTOR--------------------------------------------*/
 		/*===================================================================================================================*/
 							RPN( const std::string & input );
-							RPN( const RPN & copy );
 							const RPN & operator=( const RPN & rhs );
 							~RPN( void );
 		/*===================================================================================================================*/
 		/*------------------------------------------------GETTERS AND SETTERS------------------------------------------------*/
 		/*===================================================================================================================*/
-		std::stack<int>				GetStack( void ) const;
-		void						SetStack( std::stack<int> src );
+		std::stack<float>				GetStack( void ) const;
+		void							SetStack( std::stack<float> src );
+		bool							IsOperand( const std::string & str ) const;
 		
-		bool				IsOperand( const std::string & str ) const;
-
+		std::stack<float>		_stack;
 		std::istringstream	argv_splitted;
+		OperatorFunction operatorFunctions[4];
+		OperatorFunction opFunc;
+
     private:
-		std::stack<int>		_stack;
+		RPN( const RPN & copy );
 		std::string			_input_data;
 };
 /*====================================================*/

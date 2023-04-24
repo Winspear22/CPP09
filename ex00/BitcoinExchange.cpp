@@ -128,7 +128,7 @@ bool BitcoinExchange::ErrorAmountFormatChecker( const std::string &str )
 	long long	value;
 
 	value_str = this->SplitByCharacterForChecking(str, VALUE, '|');
-	value = std::atol(value_str.c_str());
+	value = atol(value_str.c_str());
 	if (value > std::numeric_limits<int>::max())
 	{
 		std::cout << RED << "Error: " << WHITE << "too large a number." << NORMAL << std::endl; 
@@ -223,9 +223,9 @@ bool BitcoinExchange::ErrorDateFormatChecker( const std::string &str )
 	month_str = full_date.substr(5, 2);
 	day_str = full_date.substr(8, 2);
 	
-	year = std::atoi(year_str.c_str());
-	month = std::atoi(month_str.c_str());
-	day = std::atoi(day_str.c_str());
+	year = atoi(year_str.c_str());
+	month = atoi(month_str.c_str());
+	day = atoi(day_str.c_str());
 
     if (year < 0 || month < 1 || month > 12 || day < 1 || day > 31)
         return (FAILURE);
