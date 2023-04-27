@@ -6,7 +6,7 @@ OBJS		=		$(SRCS:.cpp=.o)
 DEPS		=		$(SRCS:.cpp=.d)
 
 CC= c++
-CFLAGS= -Wall -Wextra -Werror -std=c++98 -g3
+CFLAGS= -Wall -Wextra -Werror -g3
 
 %.o:				%.cpp
 	@$(CC) $(CFLAGS) -MMD -c $< -o $@ -I $(INCLUDE)
