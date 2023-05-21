@@ -33,7 +33,7 @@ int main(int argc, char **argv)
     int i;
 
     i = 1;
-    if (argc < 3 || argc > 6000)
+    if (argc < 3 || argc > 6001)
     {
         std::cerr << RED << "Error" << NORMAL << std::endl;
         return (FAILURE);

@@ -106,7 +106,7 @@ class PmergeMe
 			}
 		}
 
-		template <typename Container>
+		/*template <typename Container>
 		void _SortContainers(Container &vec, int begin, int end)
 		{
 			int middle;
@@ -121,7 +121,22 @@ class PmergeMe
 				this->_SortContainers(vec, middle + 1, end);
 				this->_MergeContainers(vec, begin, middle, end);
 			}
-		}
+		}*/
+
+		template <typename Container>
+void _SortContainers(Container &vec, int begin, int end)
+{
+	int middle;
+
+	if (begin < end) 
+	{
+		middle = begin + (end - begin) / 2;
+		
+		this->_SortContainers(vec, begin, middle);
+		this->_SortContainers(vec, middle + 1, end);
+		this->_MergeContainers(vec, begin, middle, end);
+	}
+}
 
 		template <typename Container>
 		void _PrintContainers( Container &vec, char **argv )
@@ -135,49 +150,50 @@ class PmergeMe
 			it = vec.begin();
 			while (argv[argv_nb])
 				argv_nb++;
-			if (argv_nb < 8)
+			if (argv_nb < 6000)
 			{
-				std::cout << CYAN << "Before: " << NORMAL;
-				while (argv[i] && i < 8)
+				std::cout << "Before: ";
+				while (argv[i] && i < 6000)
 				{
-					std::cout << WHITE << argv[i][0] << " ";
+					std::cout << argv[i] << " ";
 					i++;
 				}
 			}
 			else
 			{
-				std::cout << CYAN << "Before: " << NORMAL;
-				while (argv[i] && i < 8)
+				std::cout << "Before: ";
+				while (argv[i] && i < 6000)
 				{
-					std::cout << WHITE << argv[i][0] << " ";
+					std::cout << argv[i] << " ";
 					i++;
 				}
-				std::cout << NORMAL << " [...]";
+				std::cout << " [...]";
 			}
 			std::cout << std::endl;
-			if (argv_nb < 8)
+			if (argv_nb < 6000)
 			{
-				std::cout << GREEN << "After: " << NORMAL;
+				std::cout << "After: ";
 				while (it != vec.end())
 				{
-					std::cout << WHITE << *it << " ";
+					std::cout << *it << " ";
 					it++;
 				}
 			}
 			else
 			{
 				i = 0;
-				std::cout << GREEN << "After: " << NORMAL;
-				while (i < 8)
+				std::cout << "After: ";
+				while (i < 6000)
 				{
-					std::cout << WHITE << *it << " ";
+					std::cout << *it << " ";
 					i++;
 					it++;
 				}
-				std::cout << NORMAL << " [...]";
+				std::cout << " [...]";
 			}
 			std::cout << std::endl;
 		}
+
 
 		timeval _start_timing_vector;
 		timeval _start_timing_deque;
