@@ -3,6 +3,8 @@
 BitcoinExchange::BitcoinExchange(/*ARGS*/)
 {
 	this->_switch = FIRST_TIME;
+	this->_isFirstLine = true;
+
 	return ;
 }
 
@@ -118,7 +120,10 @@ void BitcoinExchange::ErrorMsg( const std::string &str, int error_nb )
 		std::cout << RED << "Error: bad input => " << WHITE << str << NORMAL << std::endl;
 	if (error_nb == DATE_ERROR)
 		std::cout << RED << "Error: bad input => " << WHITE << str << NORMAL << std::endl;
-	if (error_nb)
+	if (error_nb == TOO_EARLY_ERROR)
+		std::cout << RED << "Error: " << WHITE << "date is before 2009-01-02." << NORMAL << std::endl;
+	if (error_nb == TOO_LATE_ERROR)
+		std::cout << RED << "Error: " << WHITE << "date is after 2022-03-2022." << NORMAL << std::endl;
 	return ;
 }
 
@@ -129,7 +134,7 @@ bool BitcoinExchange::ErrorAmountFormatChecker( const std::string &str )
 
 	value_str = this->SplitByCharacterForChecking(str, VALUE, '|');
 	value = atol(value_str.c_str());
-	if (value > std::numeric_limits<int>::max())
+	if (value > 1000)
 	{
 		std::cout << RED << "Error: " << WHITE << "too large a number." << NORMAL << std::endl; 
 		return (FAILURE);
@@ -151,7 +156,7 @@ int BitcoinExchange::ErrorCharacterChecker( const std::string &str )
 	i = 0;
 	pipe_count = 0;
 	middle_score_count = 0;
-	if (str == "date | value\r" && this->_switch == FIRST_TIME)
+	if (str == "date | value" && this->_switch == FIRST_TIME)
 	{
 		this->SetSwitch(SECOND_TIME);
 		return (FIRST_LINE_ERROR);
@@ -206,7 +211,7 @@ int BitcoinExchange::ErrorCharacterChecker( const std::string &str )
     return (SUCCESS);
 }
 
-bool BitcoinExchange::ErrorDateFormatChecker( const std::string &str )
+int	 BitcoinExchange::ErrorDateFormatChecker( const std::string &str )
 {
 	std::string full_date;
 	std::string year_str;
@@ -226,38 +231,41 @@ bool BitcoinExchange::ErrorDateFormatChecker( const std::string &str )
 	year = atoi(year_str.c_str());
 	month = atoi(month_str.c_str());
 	day = atoi(day_str.c_str());
-
-    if (year < 0 || month < 1 || month > 12 || day < 1 || day > 31)
+	
+	if (year < 0 || month < 1 || month > 12 || day < 1 || day > 31)
         return (FAILURE);
-    if ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30)
-        return (FAILURE);
-    /*if (month == 2 && ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0))) 
-	{
-        if (day > 29)
-            return (FAILURE);
-    } 
-	else if (month == 2 && day > 28) 
-        return (FAILURE);*/
+	if ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30)
+		return (FAILURE);
+	if (year < 2009 || (year == 2009 && month < 1) || (year == 2009 && month == 1 && day < 2)) 
+        return (TOO_EARLY_ERROR);
+	if (year > 2022 || (year == 2022 && month > 3) || (year == 2022 && month == 3 && day > 29))
+		return (TOO_LATE_ERROR);
     return (SUCCESS);
 }
 
-bool BitcoinExchange::CheckForErrorsInInput( std::string input )
+int BitcoinExchange::CheckForErrorsInInput( std::string input )
 {
 	if (this->ErrorCharacterChecker(input) == FIRST_LINE_ERROR)
 		return (FAILURE);
+	
 	if (this->ErrorCharacterChecker(input) == FAILURE)
 	{
-		ErrorMsg(input, CHARACTER_ERROR);
+		this->ErrorMsg(input, CHARACTER_ERROR);
 		return (FAILURE);
 	}
-	if (this->ErrorDateFormatChecker(input) == FAILURE)
+	if (this->ErrorDateFormatChecker(input) == FAILURE || this->ErrorDateFormatChecker(input) == TOO_EARLY_ERROR || this->ErrorDateFormatChecker(input) == TOO_LATE_ERROR)
 	{
-		ErrorMsg(input, DATE_ERROR);
+		if (this->ErrorDateFormatChecker(input) == TOO_EARLY_ERROR)
+			this->ErrorMsg(input, TOO_EARLY_ERROR);
+		else if (this->ErrorDateFormatChecker(input) == TOO_LATE_ERROR)
+			this->ErrorMsg(input, TOO_LATE_ERROR);
+		else
+			this->ErrorMsg(input, DATE_ERROR);
 		return (FAILURE);
 	}
 	if (this->ErrorAmountFormatChecker(input) == FAILURE)
 	{
-		ErrorMsg(input, AMOUNT_ERROR);
+		this->ErrorMsg(input, AMOUNT_ERROR);
 		return (FAILURE);
 	}
 	return (SUCCESS);

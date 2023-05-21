@@ -10,9 +10,9 @@
 # include <stdio.h>
 # include <fstream>
 # include <string.h>
-# include <limits>
 # include <cstdlib>
 # include <stdlib.h>
+# include <unistd.h>
 /*====================================================*/
 
 /*====================================================*/
@@ -35,6 +35,8 @@
 # define SUCCESS 0
 # define FAILURE 1
 # define FIRST_LINE_ERROR 2
+# define TOO_EARLY_ERROR 4
+# define TOO_LATE_ERROR 5
 
 # define CHARACTER_ERROR 1
 # define DATE_ERROR 2
@@ -44,7 +46,7 @@
 # define DATE 2
 
 # define FIRST_TIME 1
-# define SECOND_TIME 2
+# define SECOND_TIME 0
 /*====================================================*/
 
 
@@ -80,14 +82,14 @@ class BitcoinExchange
 		/*===================================================================================================================*/
 		/*------------------------------------------------CHECKERS AND WRITING-----------------------------------------------*/
 		/*===================================================================================================================*/
-		bool											CheckForErrorsInInput( std::string input );
+		int												CheckForErrorsInInput( std::string input );
 		void											WriteCorrectOutpout( const std::string &str );
 		/*===================================================================================================================*/
 		/*---------------------------------------------------ERROR HANDLERS--------------------------------------------------*/
 		/*===================================================================================================================*/
 		int												ErrorCharacterChecker( const std::string &str );
 		void											ErrorMsg( const std::string &str, int error_nb );
-		bool											ErrorDateFormatChecker( const std::string &str );
+		int												ErrorDateFormatChecker( const std::string &str );
 		bool											ErrorAmountFormatChecker( const std::string &str );
 
 	private:
@@ -97,6 +99,7 @@ class BitcoinExchange
 		std::map<std::string, float>::iterator			_it;
 		std::map<std::string, float>::reverse_iterator	_rit;
 		bool											_switch;
+		bool											_isFirstLine;
 
 
 };
