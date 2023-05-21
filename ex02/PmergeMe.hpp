@@ -41,18 +41,69 @@
 class PmergeMe
 {
 	public:
-		PmergeMe(/*ARGS*/);
-		~PmergeMe( void );
+		//PmergeMe(/*ARGS*/);
+		PmergeMe(/*ARGS*/)
+		{
+			this->_duration = 0;
+			return ;
+		}
+		
+		~PmergeMe( void )
+		{
+			return ;
+		}
+		//~PmergeMe( void );
 
 		std::vector<unsigned int> my_vector;
 		std::deque<unsigned int> my_deque;
 
-		void	ProcessVector( char **argv );
-		void	ProcessDeque( void );
+		//void	ProcessVector( char **argv );
+		//void	ProcessDeque( void );
+		void	ProcessVector( char **argv )
+		{
+			gettimeofday(&this->_start_timing_vector, NULL);
+			this->_SortContainers(this->my_vector, 0, this->my_vector.size() - 1);
+			gettimeofday(&this->_end_time_vector, NULL);
+			this->_duration = (this->_end_time_vector.tv_sec - this->_start_timing_vector.tv_sec) + (this->_end_time_vector.tv_usec - this->_start_timing_vector.tv_usec) / 1000000.0;;
+			this->_PrintContainers(this->my_vector, argv);
+			std::cout << WHITE << "Time to process a range of " << YELLOW << this->my_vector.size() << " elements " << WHITE << "with std::" << YELLOW << "vector" << NORMAL << " : " << YELLOW << this->_duration << " sec(s)" << NORMAL << std::endl;
+			return ;
+		}
+		void	ProcessDeque( void )
+		{
+			gettimeofday(&this->_start_timing_deque, NULL);
+			this->_SortContainers(this->my_deque, 0, this->my_deque.size() - 1);
+			gettimeofday(&this->_end_time_deque, NULL);
+			this->_duration = (this->_end_time_deque.tv_sec - this->_start_timing_deque.tv_sec) + (this->_end_time_deque.tv_usec - this->_start_timing_deque.tv_usec) / 1000000.0;;
+			std::cout << WHITE << "Time to process a range of " << PURPLE << this->my_deque.size() << " elements " << WHITE << "with std::" << PURPLE << "deque" << NORMAL << " : " << PURPLE << this->_duration << " sec(s)" << NORMAL << std::endl;
+			return ;
+		}
 
 	private:
-		PmergeMe( const PmergeMe & copy );
-		const PmergeMe & operator=( const PmergeMe & rhs );
+		//PmergeMe( const PmergeMe & copy );
+		//const PmergeMe & operator=( const PmergeMe & rhs );
+		
+		PmergeMe( const PmergeMe & copy )
+		{
+			*this = copy;
+			return ;
+		}
+		
+		const PmergeMe & operator=( const PmergeMe & rhs )
+		{
+			if (this != &rhs)
+			{
+				this->_duration = rhs._duration;
+				this->my_deque = rhs.my_deque;
+				this->my_vector = rhs.my_vector;
+				this->_start_timing_vector = rhs._start_timing_vector;
+				this->_start_timing_deque = rhs._start_timing_deque;
+				this->_end_time_vector = rhs._end_time_vector;
+				this->_end_time_deque = rhs._end_time_deque;
+				this->_duration = rhs._duration;
+			}
+			return (*this);
+		}
 		
 		template <typename Container>
 		void _MergeContainers(Container &vec, int begin, int middle, int end)
@@ -106,37 +157,20 @@ class PmergeMe
 			}
 		}
 
-		/*template <typename Container>
+		template <typename Container>
 		void _SortContainers(Container &vec, int begin, int end)
 		{
 			int middle;
 
-			middle = (begin + end) / 2;
-			if (end - begin <= 2)
-				this->_InsertContainers(vec, begin, end);
-			else
+			if (begin < end) 
 			{
-				
+				middle = begin + (end - begin) / 2;
+		
 				this->_SortContainers(vec, begin, middle);
 				this->_SortContainers(vec, middle + 1, end);
 				this->_MergeContainers(vec, begin, middle, end);
 			}
-		}*/
-
-		template <typename Container>
-void _SortContainers(Container &vec, int begin, int end)
-{
-	int middle;
-
-	if (begin < end) 
-	{
-		middle = begin + (end - begin) / 2;
-		
-		this->_SortContainers(vec, begin, middle);
-		this->_SortContainers(vec, middle + 1, end);
-		this->_MergeContainers(vec, begin, middle, end);
-	}
-}
+		}
 
 		template <typename Container>
 		void _PrintContainers( Container &vec, char **argv )
@@ -150,10 +184,10 @@ void _SortContainers(Container &vec, int begin, int end)
 			it = vec.begin();
 			while (argv[argv_nb])
 				argv_nb++;
-			if (argv_nb < 6000)
+			if (argv_nb < 8)
 			{
-				std::cout << "Before: ";
-				while (argv[i] && i < 6000)
+				std::cout << CYAN << "Before: " << NORMAL;
+				while (argv[i] && i < 8)
 				{
 					std::cout << argv[i] << " ";
 					i++;
@@ -161,8 +195,8 @@ void _SortContainers(Container &vec, int begin, int end)
 			}
 			else
 			{
-				std::cout << "Before: ";
-				while (argv[i] && i < 6000)
+				std::cout << CYAN << "Before: " << NORMAL;
+				while (argv[i] && i < 8)
 				{
 					std::cout << argv[i] << " ";
 					i++;
@@ -170,9 +204,9 @@ void _SortContainers(Container &vec, int begin, int end)
 				std::cout << " [...]";
 			}
 			std::cout << std::endl;
-			if (argv_nb < 6000)
+			if (argv_nb < 8)
 			{
-				std::cout << "After: ";
+				std::cout << GREEN << "After: " << NORMAL;
 				while (it != vec.end())
 				{
 					std::cout << *it << " ";
@@ -182,8 +216,8 @@ void _SortContainers(Container &vec, int begin, int end)
 			else
 			{
 				i = 0;
-				std::cout << "After: ";
-				while (i < 6000)
+				std::cout << GREEN << "After: " << NORMAL;
+				while (i < 8)
 				{
 					std::cout << *it << " ";
 					i++;

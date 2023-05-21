@@ -1,7 +1,7 @@
 # include "PmergeMe.hpp"
 
-PmergeMe::PmergeMe(/*ARGS*/)
-{
+//PmergeMe::PmergeMe(/*ARGS*/)
+/*{
 	this->_duration = 0;
 	return ;
 }
@@ -52,4 +52,4 @@ void	PmergeMe::ProcessDeque( void )
 	this->_duration = (this->_end_time_deque.tv_sec - this->_start_timing_deque.tv_sec) + (this->_end_time_deque.tv_usec - this->_start_timing_deque.tv_usec) / 1000000.0;;
 	std::cout << WHITE << "Time to process a range of " << PURPLE << this->my_deque.size() << " elements " << WHITE << "with std::" << PURPLE << "deque" << NORMAL << " : " << PURPLE << this->_duration << " sec(s)" << NORMAL << std::endl;
 	return ;
-}
+}*/

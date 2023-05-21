@@ -1,5 +1,5 @@
 NAME= PmergeMe
-SRCS= main.cpp PmergeMe.cpp
+SRCS= main.cpp
 INCLUDE= . 
 
 OBJS		=		$(SRCS:.cpp=.o)
