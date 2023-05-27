@@ -38,13 +38,13 @@ int main(int argc, char **argv)
     std::string line;
     std::ifstream database("data.csv");
     BitcoinExchange btc;
-    if (!IsTextFile(argv[1])) 
-    {
-        std::cerr << RED << "Error: " << WHITE << argv[1] << RED <<" is not a text file." << NORMAL << std::endl;
-        return (FAILURE);
-    }
     if (database.is_open()) 
 	{
+        if (!IsTextFile("data.csv"))
+        {
+            std::cerr << RED << "Error: " << WHITE << "data.csv" << RED <<" is not a text file." << NORMAL << std::endl;
+            return (FAILURE);
+        }
         if (database.peek() == EOF)
         {
             std::cout << RED << "Error:" << WHITE " data.csv " << RED << "is empty." << NORMAL << std::endl;
@@ -63,6 +63,11 @@ int main(int argc, char **argv)
     std::ifstream file(argv[1]);
     if (file.is_open()) 
 	{
+        if (!IsTextFile(argv[1])) 
+        {
+            std::cerr << RED << "Error: " << WHITE << argv[1] << RED <<" is not a text file." << NORMAL << std::endl;
+            return (FAILURE);
+        }
         if (file.peek() == EOF)
         {
             std::cout << RED << "Error " << WHITE << argv[1] << RED << " is empty." << NORMAL << std::endl;
@@ -70,14 +75,18 @@ int main(int argc, char **argv)
         }
         while(getline(file, line)) 
 		{
-            if(btc.CheckForErrorsInInput(line) == SUCCESS)
+            if (btc.CheckForErrorsInInput(line) == SUCCESS)
+            {
                 btc.WriteCorrectOutpout(line);
+                btc.isFirstLine = false;
+            }
+            btc.isFirstLine = false;
         }
         file.close();
     } 
 	else 
 	{
-        std::cerr << RED << "Error: could not open file." << NORMAL << std::endl;
+        std::cerr << RED << "Error: could not open file." << WHITE << " The file either does not exist " << RED << "or" << WHITE << " there was a problem." << NORMAL << std::endl;
         return (FAILURE);
     }
     return (SUCCESS);

@@ -41,6 +41,8 @@
 # define CHARACTER_ERROR 1
 # define DATE_ERROR 2
 # define AMOUNT_ERROR 3
+# define EMPTY_LINE 7
+# define DATE_VALUE_ERROR 8
 
 # define VALUE 1
 # define DATE 2
@@ -91,6 +93,7 @@ class BitcoinExchange
 		void											ErrorMsg( const std::string &str, int error_nb );
 		int												ErrorDateFormatChecker( const std::string &str );
 		bool											ErrorAmountFormatChecker( const std::string &str );
+		bool											isFirstLine;
 
 	private:
 		BitcoinExchange( const BitcoinExchange & copy );
@@ -99,7 +102,6 @@ class BitcoinExchange
 		std::map<std::string, float>::iterator			_it;
 		std::map<std::string, float>::reverse_iterator	_rit;
 		bool											_switch;
-		bool											_isFirstLine;
 
 
 };

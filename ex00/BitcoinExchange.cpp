@@ -3,7 +3,7 @@
 BitcoinExchange::BitcoinExchange(/*ARGS*/)
 {
 	this->_switch = FIRST_TIME;
-	this->_isFirstLine = true;
+	this->isFirstLine = true;
 
 	return ;
 }
@@ -21,6 +21,7 @@ const BitcoinExchange & BitcoinExchange::operator=( const BitcoinExchange & rhs 
 		this->_rit = rhs._rit;
         this->_database_content = rhs._database_content;
 		this->_switch = rhs._switch;
+		this->isFirstLine = rhs.isFirstLine;
     }
 	return (*this);
 }
@@ -116,6 +117,10 @@ std::string BitcoinExchange::SplitByCharacterForChecking( std::string input, int
 
 void BitcoinExchange::ErrorMsg( const std::string &str, int error_nb )
 {
+	if (error_nb == EMPTY_LINE)
+		std::cout << RED << "Error: " << WHITE << "empty line." << NORMAL << std::endl;
+	if (error_nb == DATE_VALUE_ERROR)
+		std::cout << RED << "Error: bad input => " << WHITE << "several occurences of " << str << NORMAL << std::endl;
 	if (error_nb == CHARACTER_ERROR)
 		std::cout << RED << "Error: bad input => " << WHITE << str << NORMAL << std::endl;
 	if (error_nb == DATE_ERROR)
@@ -156,11 +161,6 @@ int BitcoinExchange::ErrorCharacterChecker( const std::string &str )
 	i = 0;
 	pipe_count = 0;
 	middle_score_count = 0;
-	if (str == "date | value" && this->_switch == FIRST_TIME)
-	{
-		this->SetSwitch(SECOND_TIME);
-		return (FIRST_LINE_ERROR);
-	}
 	/*VERIFIE LA PRESENCE DE LETTRES OU CARACTERES INTERDITS*/
     while (i < str.size())
     {
@@ -243,33 +243,7 @@ int	 BitcoinExchange::ErrorDateFormatChecker( const std::string &str )
     return (SUCCESS);
 }
 
-int BitcoinExchange::CheckForErrorsInInput( std::string input )
-{
-	if (this->ErrorCharacterChecker(input) == FIRST_LINE_ERROR)
-		return (FAILURE);
-	
-	if (this->ErrorCharacterChecker(input) == FAILURE)
-	{
-		this->ErrorMsg(input, CHARACTER_ERROR);
-		return (FAILURE);
-	}
-	if (this->ErrorDateFormatChecker(input) == FAILURE || this->ErrorDateFormatChecker(input) == TOO_EARLY_ERROR || this->ErrorDateFormatChecker(input) == TOO_LATE_ERROR)
-	{
-		if (this->ErrorDateFormatChecker(input) == TOO_EARLY_ERROR)
-			this->ErrorMsg(input, TOO_EARLY_ERROR);
-		else if (this->ErrorDateFormatChecker(input) == TOO_LATE_ERROR)
-			this->ErrorMsg(input, TOO_LATE_ERROR);
-		else
-			this->ErrorMsg(input, DATE_ERROR);
-		return (FAILURE);
-	}
-	if (this->ErrorAmountFormatChecker(input) == FAILURE)
-	{
-		this->ErrorMsg(input, AMOUNT_ERROR);
-		return (FAILURE);
-	}
-	return (SUCCESS);
-}
+
 
 void BitcoinExchange::WriteCorrectOutpout( const std::string &str )
 {
@@ -305,3 +279,52 @@ void BitcoinExchange::WriteCorrectOutpout( const std::string &str )
 }
 
 
+int BitcoinExchange::CheckForErrorsInInput( std::string input )
+{
+
+	if (input.empty())
+	{
+		this->ErrorMsg(input, EMPTY_LINE);
+		return (FAILURE);
+	}
+	if (input == "date | value" && this->_switch == FIRST_TIME && this->_isirstLine == true)
+	{
+		/*c'est le premier date | value et la première ligne*/
+		this->SetSwitch(SECOND_TIME);
+		return (FAILURE); //Je mets FAILURE pour ne pas que le programme traite cette ligne dans la suite
+	}
+	if (input == "date | value" && this->_switch == FIRST_TIME && this->_isFrstLine == false)
+	{
+		/*c'est le premier date | value et pas la 1er ligne*/
+		this->SetSwitch(SECOND_TIME);
+		std::cout << RED << "Error: " << WHITE << "date | value should be at the beginning of the document." << NORMAL << std::endl;
+		return (FAILURE); 
+	}
+	if (input == "date | value" && this->_switch == SECOND_TIME)
+	{
+		/*ce n'est pas le premier date value*/
+		this->ErrorMsg(input, DATE_VALUE_ERROR);
+		return (FAILURE);
+	}
+	if (this->ErrorCharacterChecker(input) == FAILURE)
+	{
+		this->ErrorMsg(input, CHARACTER_ERROR);
+		return (FAILURE);
+	}
+	if (this->ErrorDateFormatChecker(input) == FAILURE || this->ErrorDateFormatChecker(input) == TOO_EARLY_ERROR || this->ErrorDateFormatChecker(input) == TOO_LATE_ERROR)
+	{
+		if (this->ErrorDateFormatChecker(input) == TOO_EARLY_ERROR)
+			this->ErrorMsg(input, TOO_EARLY_ERROR);
+		else if (this->ErrorDateFormatChecker(input) == TOO_LATE_ERROR)
+			this->ErrorMsg(input, TOO_LATE_ERROR);
+		else
+			this->ErrorMsg(input, DATE_ERROR);
+		return (FAILURE);
+	}
+	if (this->ErrorAmountFormatChecker(input) == FAILURE)
+	{
+		this->ErrorMsg(input, AMOUNT_ERROR);
+		return (FAILURE);
+	}
+	return (SUCCESS);
+}
