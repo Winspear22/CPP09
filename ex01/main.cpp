@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 			{
                 if (instance.stack.size() < 2) 
 				{
-                    std::cerr << RED << "Error" << NORMAL << std::endl;
+                    std::cerr << RED << "Error. There is not enough number." << NORMAL << std::endl;
                     return (FAILURE);
                 }
                 number2 = instance.stack.top();
@@ -47,7 +47,7 @@ int main(int argc, char **argv)
                 IsThereAnError = instance.ptr->fcts(number1, number2, result);
                 if (IsThereAnError != NO) 
 				{
-                    std::cerr << RED << "Error" << NORMAL << std::endl;
+                    std::cerr << RED << "Error. You divided by zero." << NORMAL << std::endl;
                     return (FAILURE);
                 }
                 instance.stack.push(result);
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
             {
                 if (!isdigit(str[i]))
                 {
-                    std::cerr << RED << "Error" << NORMAL << std::endl;
+                    std::cerr << RED << "Error. There is a non numerical character : " << WHITE << str[i] << NORMAL << std::endl;
                     return (FAILURE);
                 }
                 i++;
@@ -69,15 +69,15 @@ int main(int argc, char **argv)
 			nbr = atol(str.c_str());
             if (nbr >= 10) // Si le nombre est supérieur ou égal à 10, c'est une erreur
             {
-                std::cerr << RED << "Error: Number is not less than " << WHITE << "10" << NORMAL << std::endl;
+                std::cerr << RED << "Error: Number is is superior to " << WHITE << "9." << NORMAL << std::endl;
                 return (FAILURE);
             }
             instance.stack.push(nbr);
         }
     }
-    if (instance.stack.size() != 1) 
+    if (instance.stack.size() != 1) // S'il reste autre chose que le resultat, il y'a un problème (manque d'opérateur)
 	{
-		std::cerr << RED << "Error" << NORMAL << std::endl;
+		std::cerr << RED << "Error. Result not the only number in stack." << NORMAL << std::endl;
         return (FAILURE);
     }
     std::cout << instance.stack.top() << std::endl;

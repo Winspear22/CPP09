@@ -54,7 +54,7 @@ int main(int argc, char **argv)
                 instance.my_deque.push_back(atoi(argv[i]));
                 i++;
             }
-			instance.ProcessVector(argv);
+			instance.ProcessVector(argv); // on envoie argv pour imprimer les args
 			instance.ProcessDeque();
 		}
     }
