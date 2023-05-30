@@ -47,8 +47,8 @@ class PmergeMe
 		void	ProcessVector( char **argv );
 		void	ProcessDeque( void );
 
-		std::vector<unsigned int> my_vector;
-		std::deque<unsigned int> my_deque;
+		std::vector<int> my_vector;
+		std::deque<int> my_deque;
 
 	private:
 		PmergeMe( const PmergeMe & copy );

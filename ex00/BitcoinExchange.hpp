@@ -78,7 +78,6 @@ class BitcoinExchange
 		/*-----------------------------------------------------SPLITTERS-----------------------------------------------------*/
 		/*===================================================================================================================*/
 		void											SplitByCharacter( std::string input );
-		//std::string 									SplitByCharacterForChecking( std::string input, int choice );
 		std::string										SplitByCharacterForChecking( std::string input, int choice, const char c );
 
 		/*===================================================================================================================*/

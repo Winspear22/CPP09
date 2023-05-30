@@ -2,8 +2,8 @@
 
 bool	CheckError( char **argv )
 {
-	unsigned int 	i;
-	unsigned int 	j;
+	int 	i;
+	int 	j;
 	long			k;
 	
 	i = 1;
@@ -13,7 +13,7 @@ bool	CheckError( char **argv )
 		if (strlen(argv[i]) == 0)
             return (FAILURE);
 		k = atol(argv[i]);
-		if (k < 0 || k > std::numeric_limits<unsigned int>::max())
+		if (k < 0 || k > std::numeric_limits<int>::max())
 			return (FAILURE);
 		while (argv[i][j])
 		{

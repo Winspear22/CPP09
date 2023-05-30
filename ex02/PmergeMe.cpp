@@ -105,7 +105,6 @@ void PmergeMe::_SortContainers(Container & container, int begin, int end)
 	if (begin < end) // peut s'xpliquer par tant qu'il y'a plus d'un élément dans le tableau. Ce if sert à arrêter la récursivité
 	{
 		middle = begin + (end - begin) / 2;
-
 		this->_SortContainers(container, begin, middle);
 		this->_SortContainers(container, middle + 1, end);
 		this->_MergeContainers(container, begin, middle, end);
